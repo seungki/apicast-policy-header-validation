@@ -1,0 +1,25 @@
+{
+  "$schema": "http://apicast.io/policy-v1/schema#manifest#",
+  "name": "Header Validation",
+  "summary": "This is for HTTP header validation",
+  "description": "If you want to check specific value of header, then use this.",
+  "version": "0.1",
+  "configuration": {
+    "type": "object",
+    "properties": {
+      "header_name":{
+        "type":"string"
+      },
+      "header_value":{
+        "type":"string"
+      },
+      "error_msg": {
+        "type":"string"
+      }
+    },
+    "required":[
+      "header_name",
+      "header_value"
+    ]
+  }
+}
