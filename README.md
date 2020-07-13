@@ -10,7 +10,7 @@ This policy is an custom policy which is to check specific header name and value
 To install this on OpenShift you can use provided template:
 
 ```shell
-oc new-app -f openshift.yml --param AMP_RELEASE=2.2.0
+oc new-app -f openshift.yml --param AMP_RELEASE=2.8
 ```
 
 The template creates new ImageStream for images containing this policy.
