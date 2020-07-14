@@ -19,7 +19,7 @@ The module does not crash without configuration.
     {
       "proxy": {
         "policy_chain": [
-          { "name": "example", "version": "0.1" },
+          { "name": "header-validation", "version": "0.1" },
           { "name": "apicast.policy.echo", "configuration": { } }
         ]
       }
@@ -31,5 +31,4 @@ GET /t
 --- response_body
 GET /t HTTP/1.1
 --- error_code: 200
---- no_error_log
 [error]

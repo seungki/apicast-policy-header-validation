@@ -24,7 +24,7 @@ objects:
     output:
       to:
         kind: ImageStreamTag
-        name: apicast-policy:header-validation
+        name: 'apicast-policy:'
     source:
       git:
         uri: https://github.com/seungki/apicast-policy-header-validation.git
@@ -36,6 +36,8 @@ objects:
         from:
           kind: ImageStreamTag
           name: 'amp-apicast:${AMP_RELEASE}'
+        pullSecret:
+          name: 6560472-ocp4-service-account-pull-secret
 
 - apiVersion: v1
   kind: BuildConfig
@@ -62,7 +64,7 @@ objects:
       images:
         - from:
             kind: ImageStreamTag
-            name: 'apicast-policy:validate-header'
+            name: 'apicast-policy:latest'
           paths:
             # copy policy source code into the new image
             - destinationDir: policies
@@ -80,6 +82,8 @@ objects:
         from:
           kind: ImageStreamTag
           name: 'amp-apicast:${AMP_RELEASE}'
+        pullSecret:
+          name: 6560472-ocp4-service-account-pull-secret
       type: Docker
     triggers:
       - type: ConfigChange
