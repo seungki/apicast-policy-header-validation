@@ -17,7 +17,6 @@ The template creates new ImageStream for images containing this policy.
 Then it creates two BuildConfigs: one for building an image to apicast-policy ImageStream
 and second one for creating new APIcast image copying just necessary code from that previous image.
 
-
 # License
 
 MIT
