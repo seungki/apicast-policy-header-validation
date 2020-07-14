@@ -10,7 +10,10 @@
       "header_name":{
         "type":"string"
       },
-      "header_value":{
+      "header_value_staging":{
+        "type":"string"
+      },
+      "header_value_production":{
         "type":"string"
       },
       "error_msg": {
@@ -19,7 +22,8 @@
     },
     "required":[
       "header_name",
-      "header_value"
+      "header_value_staging",
+      "header_value_production"
     ]
   }
 }
