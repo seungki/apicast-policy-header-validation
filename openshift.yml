@@ -5,91 +5,99 @@ metadata:
 message: "APIcast Policy - Header Validation"
 objects:
 
-- apiVersion: v1
-  kind: ImageStream
-  metadata:
-    annotations:
-    labels:
-      app: apicast
-    name: apicast-policy
+  - apiVersion: v1
+    kind: ImageStream
+    metadata:
+      annotations:
+      labels:
+        app: apicast
+      name: apicast-policy
 
-- apiVersion: v1
-  kind: BuildConfig
-  metadata:
-    annotations:
-    labels:
-      app: apicast
-    name: apicast-policy-header-validation
-  spec:
-    output:
-      to:
-        kind: ImageStreamTag
-        name: 'apicast-policy:'
-    source:
-      git:
-        uri: https://github.com/seungki/apicast-policy-header-validation.git
-        ref: 'master'
-      type: Git
-    strategy:
-      type: Source
-      sourceStrategy:
-        from:
+
+  - apiVersion: v1
+    kind: BuildConfig
+    metadata:
+      annotations:
+      labels:
+        app: apicast
+      name: apicast-policy-header-validation
+    spec:
+      nodeSelector: null
+      output:
+        to:
           kind: ImageStreamTag
-          name: 'amp-apicast:${AMP_RELEASE}'
-        pullSecret:
-          name: 6560472-ocp4-service-account-pull-secret
+          name: 'apicast-policy:latest'
+      resources: {}
+      successfulBuildsHistoryLimit: 5
+      failedBuildsHistoryLimit: 5
+      strategy:
+        type: Source
+        sourceStrategy:
+          from:
+            kind: ImageStreamTag
+            name: 'amp-apicast:${AMP_RELEASE}'
+          pullSecret:
+            name: ${SECRET_HERE}
+      postCommit: {}
+      source:
+        type: Git
+        git:
+          uri: 'https://github.com/seungki/apicast-policy-header-validation.git'
+          ref: master
+      triggers:
+        - type: GitHub
+          github:
+            secret: ${SECRET_HERE}
+      runPolicy: Serial
 
-- apiVersion: v1
-  kind: BuildConfig
-  metadata:
-    annotations:
-    labels:
-      app: apicast
-    name: apicast-custom-policies
-  spec:
-    nodeSelector: null
-    output:
-      to:
-        kind: ImageStreamTag
-        name: 'amp-apicast:latest'
-    postCommit:
-      args:
-        - '--test'
-        - '--lazy'
-      command:
-        - bin/apicast
-    resources: {}
-    runPolicy: Serial
-    source:
-      images:
-        - from:
+  - apiVersion: v1
+    kind: BuildConfig
+    metadata:
+      annotations:
+      labels:
+        app: apicast
+      name: apicast-custom-policies
+    spec:
+      nodeSelector: null
+      output:
+        to:
+          kind: ImageStreamTag
+          name: 'amp-apicast:2.8.1'
+        pushSecret:
+          name: builder-dockercfg-tdgkh
+      resources: {}
+      successfulBuildsHistoryLimit: 5
+      failedBuildsHistoryLimit: 5
+      strategy:
+        type: Docker
+        dockerStrategy:
+          from:
+            kind: ImageStreamTag
+            name: 'amp-apicast:2.8'
+          pullSecret:
+            name: ${SECRET_HERE}
+      postCommit: {}
+      source:
+        type: Dockerfile
+        dockerfile: |
+          FROM scratch
+          COPY . src
+        images:
+          - from:
             kind: ImageStreamTag
             name: 'apicast-policy:latest'
+          as: null
           paths:
-            # copy policy source code into the new image
-            - destinationDir: policies
-              sourcePath: /opt/app-root/policies/header-validation/
-            # copy also installed dependencies to the policy folder, so they are vendored
-            # - destinationDir: policies/example/0.1/resty/
-            #   sourcePath: /opt/app-root/src/lua_modules/share/lua/5.1/resty/iputils.lua
-      type: Dockerfile
-      dockerfile: |
-        FROM scratch
-        COPY . src
+            - sourcePath: /opt/app-root/policies/header-validation/
+            destinationDir: policies
+      triggers:
+        - type: ConfigChange
+        - type: ImageChange
+      runPolicy: Serial
 
-    strategy:
-      dockerStrategy:
-        from:
-          kind: ImageStreamTag
-          name: 'amp-apicast:${AMP_RELEASE}'
-        pullSecret:
-          name: 6560472-ocp4-service-account-pull-secret
-      type: Docker
-    triggers:
-      - type: ConfigChange
-      - type: ImageChange
+
 
 parameters:
-- name: AMP_RELEASE
-  required: true
-  description: AMP Version (eg. 2.2.0-GA)
+  - name: AMP_RELEASE
+    required: true
+    description: AMP Version (eg. 2.8)
