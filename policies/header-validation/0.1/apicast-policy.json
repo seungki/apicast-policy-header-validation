@@ -1,22 +1,26 @@
 {
   "$schema": "http://apicast.io/policy-v1/schema#manifest#",
   "name": "Header Validation",
-  "summary": "This is for HTTP header validation",
+  "summary": "This is for HTTP Header validation",
   "description": "If you want to check specific value of header, then use this.",
   "version": "0.1",
   "configuration": {
     "type": "object",
     "properties": {
       "header_name":{
+        "description": "Header Name (eg. Authorization)",
         "type":"string"
       },
       "header_value_staging":{
+        "description": "Value of Header for staging",
         "type":"string"
       },
       "header_value_production":{
+        "description": "Value of Header for production",
         "type":"string"
       },
       "error_msg": {
+        "description": "Message to show if the header value does not match",
         "type":"string"
       }
     },
