@@ -23,7 +23,7 @@ function _M:access()
 
     if h_value ~= self.header_value then
       ngx.status = ngx.HTTP_UNAUTHORIZED
-      ngx.say(error_msg)
+      ngx.say(self.error_msg)
       ngx.exit(ngx.status)
     end
   end
